@@ -480,9 +480,9 @@
                 title: "Feel Good Inc.",
                 artist: "Gorillaz, De La Soul",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71Mp%2B%2B-2LRL._SS500_.jpg&f=1&nofb=1&ipt=4727d8fbc3e054a0d194fb7cbc93ca10d6fa508d49547c4b657a06fea72af8a8&ipo=images",
-                description: "",
-                timeline: "",
-                color: "#FFFFFF"
+                description: "“Feel Good Inc.” criticises herd mentality, isolation, and escapism. As a kid, I believed I was special, and that I was above these ideas. I remember listening to this song one day as my father explained this track to me (I might still have this album on CD). My father said something along the lines of, “I agree with what Gorillaz is saying here, but I think they should focus more on the temptations these ideas hold.” I remember thinking my dad was silly; when he spelt out these ideas for me, the temptations seemed so stupid. However, I came to find that I was unbelievably wrong.",
+                timeline: "< 2017",
+                color: "#ffb700"
             }
         ];
 
@@ -603,14 +603,25 @@
                 text = "No description available.";
             }
             
-            const chars = text.split('');
+            const words = text.split(' ');
             
-            chars.forEach((char, index) => {
-                const span = document.createElement('span');
-                span.className = 'char';
-                span.textContent = char === ' ' ? '\u00A0' : char; // Preserve spaces
-                span.style.setProperty('--char-index', index);
-                container.appendChild(span);
+            words.forEach((word, wordIndex) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                
+                word.split('').forEach((char, charIndex) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = char;
+                    charSpan.style.setProperty('--char-index', charIndex);
+                    wordSpan.appendChild(charSpan);
+                });
+                
+                container.appendChild(wordSpan);
+                
+                if (wordIndex < words.length - 1) {
+                    container.appendChild(document.createTextNode(' ')); // Preserve spaces between words
+                }
             });
             
             // Ensure container is visible

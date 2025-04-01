@@ -480,7 +480,7 @@
                 title: "The Perfect Girl",
                 artist: "Mareux",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.qobuz.com%2Fimages%2Fcovers%2Fwa%2Fp0%2Fi1vr8bgfip0wa_600.jpg&f=1&nofb=1&ipt=7afb2d936e036f04dc98d827cc2f64da316e6d328303126082afe2c616021a6b&ipo=images",
-                description: "",
+                description: "I sat in silence, lost in memories of the past, where each one weighed like a secret burden. Then came a turning point that reshaped my destiny. It marked the birth of something sweet yet dangerous, like balancing a knife on my tracheal artery, a touch that sent shivers and sparked unexpected butterflies. And in that altered moment, I met a strange girl, her presence as enigmatic as the new path unfolding before me.",
                 timeline: "2020-2022",
                 color: "#FFFFFF"
             },
@@ -621,14 +621,25 @@
                 text = "No description available.";
             }
             
-            const chars = text.split('');
+            const words = text.split(' ');
             
-            chars.forEach((char, index) => {
-                const span = document.createElement('span');
-                span.className = 'char';
-                span.textContent = char === ' ' ? '\u00A0' : char; // Preserve spaces
-                span.style.setProperty('--char-index', index);
-                container.appendChild(span);
+            words.forEach((word, wordIndex) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                
+                word.split('').forEach((char, charIndex) => {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = char;
+                    charSpan.style.setProperty('--char-index', charIndex);
+                    wordSpan.appendChild(charSpan);
+                });
+                
+                container.appendChild(wordSpan);
+                
+                if (wordIndex < words.length - 1) {
+                    container.appendChild(document.createTextNode(' ')); // Preserve spaces between words
+                }
             });
             
             // Ensure container is visible
