@@ -652,7 +652,8 @@
             applyThemeColor(song.color);
             
             // Determine the image source (support for both file paths and URLs)
-            const imageSrc = song.coverUrl.startsWith('http') ? song.coverUrl : `file://${song.coverUrl}`;
+            // const imageSrc = song.coverUrl.startsWith('http') ? song.coverUrl : `file://${song.coverUrl}`;
+            const imageSrc = song.coverUrl;
             
             // Create song display HTML
             songDisplay.innerHTML = `
