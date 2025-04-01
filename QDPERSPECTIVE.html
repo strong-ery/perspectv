@@ -608,25 +608,29 @@
             words.forEach((word, wordIndex) => {
                 const wordSpan = document.createElement('span');
                 wordSpan.className = 'word';
+                wordSpan.style.display = 'inline-block'; // Ensures words stay together while allowing animation
                 
                 word.split('').forEach((char, charIndex) => {
                     const charSpan = document.createElement('span');
                     charSpan.className = 'char';
                     charSpan.textContent = char;
                     charSpan.style.setProperty('--char-index', charIndex);
+                    charSpan.style.display = 'inline-block'; // Prevents line break between letters
                     wordSpan.appendChild(charSpan);
                 });
                 
                 container.appendChild(wordSpan);
                 
                 if (wordIndex < words.length - 1) {
-                    container.appendChild(document.createTextNode(' ')); // Preserve spaces between words
+                    container.appendChild(document.createTextNode(' ')); // Preserve spaces naturally
                 }
             });
             
             // Ensure container is visible
             container.style.display = 'block';
         }
+
+
 
         // Display current song
         function displaySong(index) {

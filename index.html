@@ -482,7 +482,7 @@
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.qobuz.com%2Fimages%2Fcovers%2Fwa%2Fp0%2Fi1vr8bgfip0wa_600.jpg&f=1&nofb=1&ipt=7afb2d936e036f04dc98d827cc2f64da316e6d328303126082afe2c616021a6b&ipo=images",
                 description: "I sat in silence, lost in memories of the past, where each one weighed like a secret burden. Then came a turning point that reshaped my destiny. It marked the birth of something sweet yet dangerous, like balancing a knife on my tracheal artery, a touch that sent shivers and sparked unexpected butterflies. And in that altered moment, I met a strange girl, her presence as enigmatic as the new path unfolding before me.",
                 timeline: "2020-2022",
-                color: "#FFFFFF"
+                color: "#fceefd"
             },
             {
                 id: 2,
@@ -626,19 +626,21 @@
             words.forEach((word, wordIndex) => {
                 const wordSpan = document.createElement('span');
                 wordSpan.className = 'word';
+                wordSpan.style.display = 'inline-block'; // Ensures words stay together while allowing animation
                 
                 word.split('').forEach((char, charIndex) => {
                     const charSpan = document.createElement('span');
                     charSpan.className = 'char';
                     charSpan.textContent = char;
                     charSpan.style.setProperty('--char-index', charIndex);
+                    charSpan.style.display = 'inline-block'; // Prevents line break between letters
                     wordSpan.appendChild(charSpan);
                 });
                 
                 container.appendChild(wordSpan);
                 
                 if (wordIndex < words.length - 1) {
-                    container.appendChild(document.createTextNode(' ')); // Preserve spaces between words
+                    container.appendChild(document.createTextNode(' ')); // Preserve spaces naturally
                 }
             });
             
