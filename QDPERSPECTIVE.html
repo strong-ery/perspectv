@@ -476,6 +476,15 @@
         // Modified JSON data with color values for each song
         const playlistData = [
             {
+                id: 0,
+                title: "The Q.D. Perspective",
+                artist: "Quinn DeBoer",
+                coverUrl: "/QDPerspective.png",
+                description: "",
+                timeline: " > 2008",
+                color: "#FFFFFF"
+            },
+            {
                 id: 1,
                 title: "Feel Good Inc.",
                 artist: "Gorillaz, De La Soul",
@@ -630,8 +639,6 @@
             container.style.display = 'block';
         }
 
-
-
         // Display current song
         function displaySong(index) {
             // Update buttons state
@@ -644,11 +651,14 @@
             // Apply the theme color transition
             applyThemeColor(song.color);
             
+            // Determine the image source (support for both file paths and URLs)
+            const imageSrc = song.coverUrl.startsWith('http') ? song.coverUrl : `file://${song.coverUrl}`;
+            
             // Create song display HTML
             songDisplay.innerHTML = `
                 <div class="left-column">
                     <div class="album-art-container">
-                        <img src="${song.coverUrl}" alt="${song.title} cover" class="album-art">
+                        <img src="${imageSrc}" alt="${song.title} cover" class="album-art">
                         <div class="vinyl-record"></div>
                     </div>
                     <div class="song-details">
