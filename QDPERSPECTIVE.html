@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>qdperspectv</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #181818;
+            --text-color: #f5f5f5;
+            --spotify-green: #1DB954;
+            --spotify-green-dark: #169c46;
+            --transition-time: 0.4s;
+            --glow-color: rgba(29, 185, 84, 0.3);
+        }
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px var(--glow-color); }
+            50% { box-shadow: 0 0 25px var(--glow-color); }
+            100% { box-shadow: 0 0 10px var(--glow-color); }
+        }
+        
+        @keyframes fadeRotateIn {
+            0% { opacity: 0; transform: translateY(20px) rotate(-3deg); }
+            100% { opacity: 1; transform: translateY(0) rotate(0); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -100% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(29, 185, 84, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(29, 185, 84, 0.05) 0%, transparent 20%);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .playlist-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            padding: 40px;
+            position: relative;
+            width: 100%;
+            animation: floatAnimation 6s ease-in-out infinite;
+        }
+        
+        .playlist-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--spotify-green), transparent);
+            animation: shimmer 3s infinite linear;
+            background-size: 200% 100%;
+        }
+
+        .song-container {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .left-column {
+            flex: 0 0 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .right-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .album-art-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .album-art {
+            width: 280px;
+            height: 280px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: all var(--transition-time) ease;
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+        
+        .album-art:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 30px var(--glow-color);
+        }
+        
+        .vinyl-record {
+            position: absolute;
+            width: 270px;
+            height: 270px;
+            background-color: #000;
+            border-radius: 50%;
+            top: 5px;
+            right: -100px;
+            z-index: -1;
+            opacity: 0.7;
+            background: radial-gradient(circle at center, #333 0%, #000 70%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            transition: all var(--transition-time) ease;
+        }
+        
+        .vinyl-record::after {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #555 0%, #222 80%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .album-art-container:hover .vinyl-record {
+            right: -180px;
+            transform: rotate(30deg);
+        }
+
+        .song-details {
+            text-align: center;
+            width: 100%;
+        }
+
+        .song-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--spotify-green);
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+            transition: color var(--transition-time) ease;
+        }
+
+        .artist {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .description-container {
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            animation: fadeRotateIn 1s forwards 0.5s;
+            padding: 25px 30px;
+            border-radius: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            max-height: 300px;
+            overflow-y: auto;
+            border-left: 3px solid var(--spotify-green);
+            transition: border-color var(--transition-time) ease;
+        }
+
+        .description-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .description-container::-webkit-scrollbar-thumb {
+            background-color: var(--spotify-green);
+            border-radius: 5px;
+            transition: background-color var(--transition-time) ease;
+        }
+        
+        .description {
+            opacity: 1; /* Fixed: Was 0, now 1 */
+        }
+        
+        .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInChar 0.05s forwards;
+            animation-delay: calc(var(--char-index) * 0.03s);
+        }
+        
+        @keyframes fadeInChar {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline {
+            margin-top: 20px;
+            font-size: 1rem;
+            font-style: italic;
+            opacity: 0.7;
+            background-color: rgba(29, 185, 84, 0.1);
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-left: 30px;
+            transition: background-color var(--transition-time) ease;
+        }
+        
+        .timeline::before {
+            content: '📅';
+            margin-right: 8px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 40px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .nav-button-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 50px;
+        }
+
+        .nav-button {
+            background-color: var(--spotify-green);
+            border: none;
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all var(--transition-time) ease;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s ease;
+        }
+        
+        .nav-button:hover::before {
+            left: 100%;
+        }
+
+        .nav-button:hover {
+            background-color: var(--spotify-green-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 12px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: all var(--transition-time) ease;
+            cursor: pointer;
+        }
+
+        .progress-dot:hover {
+            transform: scale(1.2);
+            background-color: rgba(29, 185, 84, 0.5);
+        }
+
+        .progress-dot.active {
+            background-color: var(--spotify-green);
+            box-shadow: 0 0 10px var(--spotify-green);
+            transform: scale(1.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .title::before {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 15px;
+            background-color: var(--spotify-green);
+            bottom: 5px;
+            left: -10%;
+            z-index: -1;
+            opacity: 0.3;
+            transform: skew(-15deg);
+            transition: background-color var(--transition-time) ease;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            margin: 20px 0;
+        }
+        
+        .wave-bar {
+            width: 4px;
+            margin: 0 2px;
+            border-radius: 2px;
+            background-color: var(--spotify-green);
+            animation: soundWave 1.2s ease-in-out infinite alternate;
+            transition: background-color var(--transition-time) ease;
+        }
+        
+        @keyframes soundWave {
+            0% { height: 5px; }
+            100% { height: 25px; }
+        }
+        
+        .wave-bar:nth-child(1) { animation-delay: 0.0s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(6) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(7) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(8) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(9) { animation-delay: 0.0s; }
+        
+        .background-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--spotify-green);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: floatParticle 15s infinite linear;
+            transition: background-color var(--transition-time) ease;
+        }
+        
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-500px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">the Q.D. perspective.</h1>
+            <p class="subtitle">a piece of resonant fiction told through the songs and people that touched my life.</p>
+            <div class="sound-wave">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </div>
+        
+        <div class="playlist-card">
+            <div class="song-container" id="song-display">
+                <!-- Content will be loaded here -->
+            </div>
+            
+            <div class="navigation">
+                <div class="nav-button-container">
+                    <button class="nav-button" id="prev-button">← Previous</button>
+                </div>
+                <div class="nav-button-container">
+                    <button class="nav-button" id="next-button">Next →</button>
+                </div>
+            </div>
+            
+            <div class="progress-indicator" id="progress-indicator">
+                <!-- Dots will be generated based on playlist length -->
+            </div>
+            
+            <div class="background-particles" id="particles-container">
+                <!-- Particles will be generated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modified JSON data with color values for each song
+        const playlistData = [
+            {
+                id: 1,
+                title: "Feel Good Inc.",
+                artist: "Gorillaz, De La Soul",
+                coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71Mp%2B%2B-2LRL._SS500_.jpg&f=1&nofb=1&ipt=4727d8fbc3e054a0d194fb7cbc93ca10d6fa508d49547c4b657a06fea72af8a8&ipo=images",
+                description: "",
+                timeline: "",
+                color: "#FFFFFF"
+            }
+        ];
+
+        // DOM elements
+        const songDisplay = document.getElementById('song-display');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressIndicator = document.getElementById('progress-indicator');
+        const particlesContainer = document.getElementById('particles-container');
+
+        // Current song index
+        let currentIndex = 0;
+
+        // Apply theme color based on current song
+        function applyThemeColor(color) {
+            // Create a style element if it doesn't exist
+            let themeStyle = document.getElementById('dynamic-theme');
+            if (!themeStyle) {
+                themeStyle = document.createElement('style');
+                themeStyle.id = 'dynamic-theme';
+                document.head.appendChild(themeStyle);
+            }
+            
+            // Calculate darker and lighter variants of the color
+            const darkerColor = adjustColor(color, -30);
+            const glowColor = color + "4D"; // 30% opacity version for glow effects
+            
+            // Update CSS variables with animation
+            themeStyle.innerHTML = `
+                :root {
+                    --spotify-green: ${color};
+                    --spotify-green-dark: ${darkerColor};
+                    --glow-color: ${glowColor};
+                }
+                
+                .playlist-card::before {
+                    background: linear-gradient(90deg, transparent, ${color}, transparent);
+                }
+                
+                .description-container {
+                    border-left: 3px solid ${color};
+                }
+                
+                .description-container::-webkit-scrollbar-thumb {
+                    background-color: ${color};
+                }
+                
+                .timeline {
+                    background-color: ${color}1A;
+                }
+            `;
+        }
+
+        // Helper function to darken/lighten colors
+        function adjustColor(hex, percent) {
+            // Remove the # if present
+            hex = hex.replace(/^\s*#|\s*$/g, '');
+            
+            // Convert to RGB
+            let r = parseInt(hex.substr(0, 2), 16);
+            let g = parseInt(hex.substr(2, 2), 16);
+            let b = parseInt(hex.substr(4, 2), 16);
+            
+            // Adjust the color
+            r = Math.max(0, Math.min(255, r + percent));
+            g = Math.max(0, Math.min(255, g + percent));
+            b = Math.max(0, Math.min(255, b + percent));
+            
+            // Convert back to hex
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+
+        // Create background particles
+        function createParticles() {
+            particlesContainer.innerHTML = '';
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random positioning
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const size = Math.random() * 5 + 2;
+                
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDuration = `${15 + Math.random() * 10}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Create progress dots
+        function createProgressDots() {
+            progressIndicator.innerHTML = '';
+            for (let i = 0; i < playlistData.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === currentIndex ? ' active' : '');
+                dot.addEventListener('click', () => {
+                    currentIndex = i;
+                    displaySong(currentIndex);
+                });
+                progressIndicator.appendChild(dot);
+            }
+        }
+        
+        function animateText(text, container) {
+            container.innerHTML = '';
+            
+            // Ensure valid text
+            if (!text || text.trim() === '') {
+                text = "No description available.";
+            }
+            
+            const chars = text.split('');
+            
+            chars.forEach((char, index) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = char === ' ' ? '\u00A0' : char; // Preserve spaces
+                span.style.setProperty('--char-index', index);
+                container.appendChild(span);
+            });
+            
+            // Ensure container is visible
+            container.style.display = 'block';
+        }
+
+        // Display current song
+        function displaySong(index) {
+            // Update buttons state
+            prevButton.disabled = index === 0;
+            nextButton.disabled = index === playlistData.length - 1;
+            
+            // Get current song
+            const song = playlistData[index];
+            
+            // Apply the theme color transition
+            applyThemeColor(song.color);
+            
+            // Create song display HTML
+            songDisplay.innerHTML = `
+                <div class="left-column">
+                    <div class="album-art-container">
+                        <img src="${song.coverUrl}" alt="${song.title} cover" class="album-art">
+                        <div class="vinyl-record"></div>
+                    </div>
+                    <div class="song-details">
+                        <h2 class="song-title">${song.title}</h2>
+                        <p class="artist">${song.artist}</p>
+                    </div>
+                </div>
+                <div class="right-column">
+                    <div class="description-container">
+                        <div class="description"></div>
+                    </div>
+                    <p class="timeline">${song.timeline}</p>
+                </div>
+            `;
+            
+            // Fixed approach to ensure description is displayed
+            const descriptionElement = songDisplay.querySelector('.description');
+            setTimeout(() => {
+                animateText(song.description, descriptionElement);
+            }, 600);
+            
+            // Update progress dots
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, i) => {
+                dot.className = 'progress-dot' + (i === index ? ' active' : '');
+            });
+        }
+
+        // Event listeners for navigation
+        prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                displaySong(currentIndex);
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentIndex < playlistData.length - 1) {
+                currentIndex++;
+                displaySong(currentIndex);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                currentIndex--;
+                displaySong(currentIndex);
+            } else if (e.key === 'ArrowRight' && currentIndex < playlistData.length - 1) {
+                currentIndex++;
+                displaySong(currentIndex);
+            }
+        });
+
+        // Initialize the display
+        createProgressDots();
+        createParticles();
+        displaySong(currentIndex);
+    </script>
+</body>
+</html>
