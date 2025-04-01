@@ -181,7 +181,6 @@
             position: relative;
             font-size: 1.1rem;
             line-height: 1.8;
-            opacity: 0;
             animation: fadeRotateIn 1s forwards 0.5s;
             padding: 25px 30px;
             border-radius: 12px;
@@ -203,7 +202,7 @@
         }
         
         .description {
-            opacity: 0;
+            opacity: 1; /* Fixed: Was 0, now 1 */
         }
         
         .char {
@@ -481,18 +480,27 @@
                 title: "The Perfect Girl",
                 artist: "Mareux",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.qobuz.com%2Fimages%2Fcovers%2Fwa%2Fp0%2Fi1vr8bgfip0wa_600.jpg&f=1&nofb=1&ipt=7afb2d936e036f04dc98d827cc2f64da316e6d328303126082afe2c616021a6b&ipo=images",
-                description: "test ",
+                description: "",
                 timeline: "2020-2022",
                 color: "#FFFFFF"
             },
             {
-                id: 1,
+                id: 2,
                 title: "Once Upon a Time",
                 artist: "Toby Fox",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.music-bazaar.com%2Falbum-images%2Fvol26%2F971%2F971789%2F2836212-big%2FUndertale-Original-Soundtrack-CD2-cover.jpg&f=1&nofb=1&ipt=8f37ad014f65f364913cdd6625ace61304fa70e2e71709d5b90f6ba4d8e7ddbd&ipo=images",
-                description: "test ",
+                description: "",
                 timeline: "2022",
                 color: "#F8A66C"
+            },
+            {
+                id: 3,
+                title: "A4 - Childly Fresh Eyes",
+                artist: "The Caretaker",
+                coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.discogs.com%2Fky3upNRuczLuQRNWiL1bQY8y4LcEtBJ3NrlVgcZh_Bk%2Frs%3Afit%2Fg%3Asm%2Fq%3A40%2Fh%3A300%2Fw%3A300%2FczM6Ly9kaXNjb2dz%2FLWRhdGFiYXNlLWlt%2FYWdlcy9SLTkxOTAw%2FNzMtMTQ3NjM2MzE1%2FNy0yODQ1LmpwZWc.jpeg&f=1&nofb=1&ipt=59b24e409b4cfe27ae73f137a9a78a941a22d04db4b00c54f0bec4cb2d21100f&ipo=images",
+                description: "",
+                timeline: "",
+                color: "#6994c7"
             }
         ];
 
@@ -605,18 +613,26 @@
             }
         }
         
-        // Animate text typing effect
         function animateText(text, container) {
             container.innerHTML = '';
+            
+            // Ensure valid text
+            if (!text || text.trim() === '') {
+                text = "No description available.";
+            }
+            
             const chars = text.split('');
             
             chars.forEach((char, index) => {
                 const span = document.createElement('span');
                 span.className = 'char';
+                span.textContent = char === ' ' ? '\u00A0' : char; // Preserve spaces
                 span.style.setProperty('--char-index', index);
-                span.textContent = char;
                 container.appendChild(span);
             });
+            
+            // Ensure container is visible
+            container.style.display = 'block';
         }
 
         // Display current song
@@ -651,7 +667,7 @@
                 </div>
             `;
             
-            // Animate the description text
+            // Fixed approach to ensure description is displayed
             const descriptionElement = songDisplay.querySelector('.description');
             setTimeout(() => {
                 animateText(song.description, descriptionElement);
