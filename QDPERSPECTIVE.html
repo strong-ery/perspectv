@@ -9,10 +9,10 @@
             --bg-color: #121212;
             --card-bg: #181818;
             --text-color: #f5f5f5;
-            --spotify-green: #1DB954;
-            --spotify-green-dark: #169c46;
+            --spotify-green: #ffffff;
+            --spotify-green-dark: #ffffff;
             --transition-time: 0.4s;
-            --glow-color: rgba(29, 185, 84, 0.3);
+            --glow-color: rgba(151, 151, 151, 0.3);
         }
 
         @keyframes floatAnimation {
@@ -50,8 +50,8 @@
             align-items: center;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(29, 185, 84, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(29, 185, 84, 0.05) 0%, transparent 20%);
+                radial-gradient(circle at 10% 20%, rgba(179, 179, 179, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(187, 187, 187, 0.05) 0%, transparent 20%);
         }
 
         .container {
@@ -167,7 +167,7 @@
             font-weight: 700;
             margin-bottom: 10px;
             color: var(--spotify-green);
-            text-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+            text-shadow: 0 0 10px rgba(132, 132, 132, 0.3);
             transition: color var(--transition-time) ease;
         }
 
@@ -475,17 +475,17 @@
     <script>
         // Modified JSON data with color values for each song
         const playlistData = [
-//            {
-//                id: 0,
-//                title: "The Q.D. Perspective",
-//                artist: "Quinn DeBoer",
-//                coverUrl: "https://i.postimg.cc/NFrvvNjQ/QDPerspective.png",
-//                description: "",
-//                timeline: " > 2008",
-//                color: "#FFFFFF"
-//            },
             {
                 id: 1,
+                title: "The Q.D. Perspective",
+                artist: "Quinn DeBoer",
+                coverUrl: "images/QDperspective.png",
+                description: "",
+                timeline: ">= //08",
+                color: "#80e0ff"
+            },
+            {
+                id: 2,
                 title: "Feel Good Inc.",
                 artist: "Gorillaz, De La Soul",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71Mp%2B%2B-2LRL._SS500_.jpg&f=1&nofb=1&ipt=4727d8fbc3e054a0d194fb7cbc93ca10d6fa508d49547c4b657a06fea72af8a8&ipo=images",

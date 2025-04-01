@@ -9,10 +9,10 @@
             --bg-color: #121212;
             --card-bg: #181818;
             --text-color: #f5f5f5;
-            --spotify-green: #1DB954;
-            --spotify-green-dark: #169c46;
+            --spotify-green: #ffffff;
+            --spotify-green-dark: #ffffff;
             --transition-time: 0.4s;
-            --glow-color: rgba(29, 185, 84, 0.3);
+            --glow-color: rgba(151, 151, 151, 0.3);
         }
 
         @keyframes floatAnimation {
@@ -50,8 +50,8 @@
             align-items: center;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(29, 185, 84, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(29, 185, 84, 0.05) 0%, transparent 20%);
+                radial-gradient(circle at 10% 20%, rgba(179, 179, 179, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(187, 187, 187, 0.05) 0%, transparent 20%);
         }
 
         .container {
@@ -167,7 +167,7 @@
             font-weight: 700;
             margin-bottom: 10px;
             color: var(--spotify-green);
-            text-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+            text-shadow: 0 0 10px rgba(132, 132, 132, 0.3);
             transition: color var(--transition-time) ease;
         }
 
@@ -479,10 +479,10 @@
                 id: 1,
                 title: "The DS Perspective",
                 artist: "Dylan Strong",
-                coverUrl: "DSperspective.png",
+                coverUrl: "images/DSperspective.png",
                 description: "",
                 timeline: ">= 12/13/08",
-                color: "#FFFFFF"
+                color: "#ff0000"
             },
             {
                 id: 2,
@@ -669,23 +669,14 @@
             // Apply the theme color transition
             applyThemeColor(song.color);
             
-            // Handle image source with support for both web URLs and local file paths
+            // Handle image source without using file:// protocol which causes security errors in browsers
             let imageSrc = song.coverUrl;
             
-            // If it's not a URL and doesn't have file:// protocol already, add it for local paths
-            if (!imageSrc.startsWith('http') && !imageSrc.startsWith('file://') && !imageSrc.startsWith('data:')) {
-                // If it's a relative path starting with ./ or ../, or an absolute path without protocol
-                imageSrc = `file://${imageSrc}`;
-            }
-            
             // Create song display HTML with error handling for the image
-            const imageHtml = `<img src="${imageSrc}" alt="${song.title} cover" class="album-art" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'280\\' height=\\'280\\' viewBox=\\'0 0 280 280\\'%3E%3Crect width=\\'280\\' height=\\'280\\' fill=\\'%23333\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' font-size=\\'20\\' text-anchor=\\'middle\\' fill=\\'%23fff\\'%3EImage not found%3C/text%3E%3C/svg%3E';">`;
-            
-            // Create song display HTML
             songDisplay.innerHTML = `
                 <div class="left-column">
                     <div class="album-art-container">
-                        ${imageHtml}
+                        <img src="${imageSrc}" alt="${song.title} cover" class="album-art" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'280\' height=\'280\' viewBox=\'0 0 280 280\'%3E%3Crect width=\'280\' height=\'280\' fill=\'%23333\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' font-size=\'20\' text-anchor=\'middle\' fill=\'%23fff\'%3EImage not found%3C/text%3E%3C/svg%3E';">
                         <div class="vinyl-record"></div>
                     </div>
                     <div class="song-details">
