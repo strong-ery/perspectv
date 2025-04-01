@@ -450,7 +450,7 @@
         
         <div class="playlist-card">
             <div class="song-container" id="song-display">
-                <!-- Content will be loaded here -->
+
             </div>
             
             <div class="navigation">
@@ -475,17 +475,17 @@
     <script>
         // Modified JSON data with color values for each song
         const playlistData = [
-//            {
-//                id: 0,
-//                title: "The D.S. Perspective",
-//                artist: "Dylan Strong",
-//                coverUrl: "https://i.postimg.cc/W4W42HTZ/DS-perspective.png",
-//                description: "",
-//                timeline: "2020-2022",
-//                color: "#FFFFFF"
-//            },
             {
                 id: 1,
+                title: "The DS Perspective",
+                artist: "Dylan Strong",
+                coverUrl: "/DSperspective.png",
+                description: "",
+                timeline: ">= 12/13/08",
+                color: "#FFFFFF"
+            },
+            {
+                id: 2,
                 title: "The Perfect Girl",
                 artist: "Mareux",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.qobuz.com%2Fimages%2Fcovers%2Fwa%2Fp0%2Fi1vr8bgfip0wa_600.jpg&f=1&nofb=1&ipt=7afb2d936e036f04dc98d827cc2f64da316e6d328303126082afe2c616021a6b&ipo=images",
@@ -494,7 +494,7 @@
                 color: "#fceefd"
             },
             {
-                id: 2,
+                id: 3,
                 title: "Once Upon a Time",
                 artist: "Toby Fox",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.music-bazaar.com%2Falbum-images%2Fvol26%2F971%2F971789%2F2836212-big%2FUndertale-Original-Soundtrack-CD2-cover.jpg&f=1&nofb=1&ipt=8f37ad014f65f364913cdd6625ace61304fa70e2e71709d5b90f6ba4d8e7ddbd&ipo=images",
@@ -503,7 +503,7 @@
                 color: "#F8A66C"
             },
             {
-                id: 3,
+                id: 4,
                 title: "A4 - Childly Fresh Eyes",
                 artist: "The Caretaker",
                 coverUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.discogs.com%2Fky3upNRuczLuQRNWiL1bQY8y4LcEtBJ3NrlVgcZh_Bk%2Frs%3Afit%2Fg%3Asm%2Fq%3A40%2Fh%3A300%2Fw%3A300%2FczM6Ly9kaXNjb2dz%2FLWRhdGFiYXNlLWlt%2FYWdlcy9SLTkxOTAw%2FNzMtMTQ3NjM2MzE1%2FNy0yODQ1LmpwZWc.jpeg&f=1&nofb=1&ipt=59b24e409b4cfe27ae73f137a9a78a941a22d04db4b00c54f0bec4cb2d21100f&ipo=images",
@@ -669,15 +669,23 @@
             // Apply the theme color transition
             applyThemeColor(song.color);
             
-            // Determine the image source (support for both file paths and URLs)
-            // const imageSrc = song.coverUrl.startsWith('http') ? song.coverUrl : `file://${song.coverUrl}`;
-            const imageSrc = song.coverUrl;
+            // Handle image source with support for both web URLs and local file paths
+            let imageSrc = song.coverUrl;
+            
+            // If it's not a URL and doesn't have file:// protocol already, add it for local paths
+            if (!imageSrc.startsWith('http') && !imageSrc.startsWith('file://') && !imageSrc.startsWith('data:')) {
+                // If it's a relative path starting with ./ or ../, or an absolute path without protocol
+                imageSrc = `file://${imageSrc}`;
+            }
+            
+            // Create song display HTML with error handling for the image
+            const imageHtml = `<img src="${imageSrc}" alt="${song.title} cover" class="album-art" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'280\\' height=\\'280\\' viewBox=\\'0 0 280 280\\'%3E%3Crect width=\\'280\\' height=\\'280\\' fill=\\'%23333\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' font-size=\\'20\\' text-anchor=\\'middle\\' fill=\\'%23fff\\'%3EImage not found%3C/text%3E%3C/svg%3E';">`;
             
             // Create song display HTML
             songDisplay.innerHTML = `
                 <div class="left-column">
                     <div class="album-art-container">
-                        <img src="${imageSrc}" alt="${song.title} cover" class="album-art">
+                        ${imageHtml}
                         <div class="vinyl-record"></div>
                     </div>
                     <div class="song-details">
